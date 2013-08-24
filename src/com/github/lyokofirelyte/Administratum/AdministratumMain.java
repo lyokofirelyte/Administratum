@@ -80,14 +80,6 @@ public void onEnable(){
 		e.printStackTrace();
 	}
 	
-		int x = 30;
-		
-		while (x > 0){
-			
-			Bukkit.broadcastMessage(ChatColor.RED + "SHE CAN CODE YOU GOOD, BUT I CAN CODE YOU BETTER!");
-			x--;
-			
-		}
 	
 	config = new YamlConfiguration();
 	datacore = new YamlConfiguration();
@@ -272,15 +264,15 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 						
 							ChatColor.translateAlternateColorCodes('&', menuHeader) + "Global Dashboard of Yourself",
 							ChatColor.RED + "..............................",
-							ChatColor.GRAY + "| " + "§" + selectionColor1 + "Overall Warnings" + ChatColor.WHITE + ": " + "§" + selectionColor1 + selectedOverall,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Automatic Actions" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedAutomatics,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "General Warns" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedGenerals,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Mutes" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedMutes,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Kicks" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedKicks,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Freezes" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedFreezes,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Restrictions" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedRestrictions,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Bans" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedBans,
-							"§" + selectionColor3 + italic + "Lookup" + ChatColor.WHITE + ": " + "§" + selectionColor3 + "/a [a] [g] [m] [k] [f] [r] [b]"});
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor1 + "Overall Warnings" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + selectedOverall,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Automatic Actions" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedAutomatics,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "General Warns" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedGenerals,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Mutes" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedMutes,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Kicks" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedKicks,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Freezes" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedFreezes,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Restrictions" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedRestrictions,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Bans" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedBans,
+							"ï¿½" + selectionColor3 + italic + "Lookup" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor3 + "/a [a] [g] [m] [k] [f] [r] [b]"});
 							break;
 							
 						case "a":
@@ -427,15 +419,15 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 						
 							ChatColor.translateAlternateColorCodes('&', menuHeader) + "Global Dashboard of " + Bukkit.getPlayer(args[1]).getName(),
 							ChatColor.RED + "..............................",
-							ChatColor.GRAY + "| " + "§" + selectionColor1 + "Overall Warnings" + ChatColor.WHITE + ": " + "§" + selectionColor1 + selectedOverall,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Automatic Actions" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedAutomatics,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "General Warns" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedGenerals,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Mutes" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedMutes,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Kicks" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedKicks,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Freezes" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedFreezes,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Restrictions" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedRestrictions,
-							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Bans" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedBans,
-							"§" + selectionColor3 + italic + "Lookup" + ChatColor.WHITE + ": " + "§" + selectionColor3 + "/a [a] [g] [m] [k] [f] [r] [b]"});
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor1 + "Overall Warnings" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + selectedOverall,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Automatic Actions" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedAutomatics,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "General Warns" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedGenerals,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Mutes" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedMutes,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Kicks" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedKicks,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Freezes" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedFreezes,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Restrictions" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedRestrictions,
+							ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Bans" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor2 + selectedBans,
+							"ï¿½" + selectionColor3 + italic + "Lookup" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor3 + "/a [a] [g] [m] [k] [f] [r] [b]"});
 							break;
 							
 						case "ex":
@@ -791,9 +783,9 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 	 if (selectedTotals >= generalRequest ){
 	
 	sender.sendMessage(new String[] {
-	"§" + lookupColor + "Viewing " + selectionType + " " + args[1] + "§" + lookupDivider + "// " + "§" + lookupColor + selectedPlayer,
-	ChatColor.GRAY + "| " + "§" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + args[1]),
-	ChatColor.GRAY + "| " + "§" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + args[1]),
+	"ï¿½" + lookupColor + "Viewing " + selectionType + " " + args[1] + "ï¿½" + lookupDivider + "// " + "ï¿½" + lookupColor + selectedPlayer,
+	ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + args[1]),
+	ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + args[1]),
 	ChatColor.WHITE + "|"});
 	
 	 }else{
@@ -816,7 +808,7 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 	String selectedPlayer = datacore.getString("temp." + sender.getName() + "." + "selection");
 	String selectionType = datacore.getString("temp." + sender.getName() + ".typeSelection");
 	int selectedLookup = datacore.getInt("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Total");
-    sender.sendMessage("§" + lookupColor + selectionType + " " + "§" + lookupDivider + "// " + "§" + lookupColor + selectedPlayer);
+    sender.sendMessage("ï¿½" + lookupColor + selectionType + " " + "ï¿½" + lookupDivider + "// " + "ï¿½" + lookupColor + selectedPlayer);
     
     switch (selectedLookup) {
 	
@@ -827,8 +819,8 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 		while(z < 5 && x > 0){
 	  
 		sender.sendMessage(new String[] {
-		ChatColor.GRAY + "| " + "§" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + z),
-		ChatColor.GRAY + "| " + "§" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + z),
+		ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + z),
+		ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + z),
 		ChatColor.WHITE + "|"
 		});
 		z++;
@@ -843,8 +835,8 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 		while(z3 < 9 && x3 >= 5){
 			
 		sender.sendMessage(new String[] {
-		ChatColor.GRAY + "| " + "§" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + z3),
-		ChatColor.GRAY + "| " + "§" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + z3),
+		ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + z3),
+		ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + z3),
 		ChatColor.WHITE + "|"
 		});
 		z3++;
@@ -858,8 +850,8 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 		int x2 = selectedLookup;
 		while(z2 < 5 && x2 > 0){			  
 		sender.sendMessage(new String[] {
-		ChatColor.GRAY + "| " + "§" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + z2),
-		ChatColor.GRAY + "| " + "§" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "§" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + z2),
+		ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Auth" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Auth" + z2),
+		ChatColor.GRAY + "| " + "ï¿½" + selectionColor2 + "Reason" + ChatColor.WHITE + ": " + "ï¿½" + selectionColor1 + datacore.getString("users." + selectedPlayer + "." + "Warnings." + selectionType + ".Reason" + z2),
 		ChatColor.WHITE + "|"
 		});
 		z2++;
