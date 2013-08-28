@@ -1,0 +1,36 @@
+# ADMINISTRATUM GLOBAL CONFIG #
+filters:
+  usingfilters: true
+  defaultReplace: -snip-
+  filter:
+    - bitch
+    - shit
+    - whore
+    - place
+  customFilters:
+    place: pLace
+    bitch: dog
+    shit: crap
+  noWarn:
+    - place
+  denyCaps: true
+automatic_warnings: true
+warning_levels:
+  fallback: warning
+  1: warning
+  2: warning
+  3: warning
+  4: restrict
+  5: freeze
+  6: kick
+  7: mute
+  add_more_here: Yes, if you want. Anything that goes over the amount you d3fin3d will use the fallback value. If you delete that value, you may throw an NPE error.
+exempt:
+  Hugh_Jasses: true
+  WaffleQuackers: true
+evacExempt:
+  Hugh_Jasses: true
+useJoinMessages: false
+useQuitMessages: false
+freezeEffect: true
+WatchListNotify: true

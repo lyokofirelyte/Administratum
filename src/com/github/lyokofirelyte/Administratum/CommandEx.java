@@ -304,7 +304,7 @@ String automaticActionFormat = plugin.styles.getString("Themes.Warnings.Automati
                           
                    
                           String automaticsUpdatedString = "" + automaticsUpdated;
-                          Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', automaticFormat).replaceAll("%player", event.getPlayer().getDisplayName()).replaceAll("%warning", automaticsUpdatedString));
+                          Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', automaticFormat).replaceAll("%name", event.getPlayer().getName()).replaceAll("%player", event.getPlayer().getDisplayName()).replaceAll("%warning", automaticsUpdatedString));
                           Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', automaticActionFormat.replaceAll("%action", action)));
                                  return;
                          
@@ -366,7 +366,7 @@ String automaticActionFormat = plugin.styles.getString("Themes.Warnings.Automati
                       }
                       
               String automaticsUpdatedString = "" + automaticsUpdated;
-              Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', automaticFormat).replaceAll("%player", event.getPlayer().getDisplayName()).replaceAll("%warning", automaticsUpdatedString)); 
+              Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', automaticFormat).replaceAll("%name", event.getPlayer().getName()).replaceAll("%player", event.getPlayer().getDisplayName()).replaceAll("%warning", automaticsUpdatedString)); 
               Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', automaticActionFormat.replaceAll("%action", action)));
                      return;
                      
@@ -470,7 +470,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 			
 			if (sender instanceof Player){
 			Player p = (Player) sender;
-			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', evacOffDisplay).replaceAll("%player", p.getDisplayName())); 
+			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', evacOffDisplay).replaceAll("%player", p.getDisplayName()).replaceAll("%name", p.getName())); 
 			return true;
 			}
 			
@@ -483,7 +483,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 		
 		if (sender instanceof Player){
 		Player p = (Player) sender;
-		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', evacOnDisplay).replaceAll("%player", p.getDisplayName())); 
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', evacOnDisplay).replaceAll("%player", p.getDisplayName()).replaceAll("%name", p.getName())); 
 		return true;
 		}
 		
@@ -502,7 +502,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 	    	}
 	    	
 	    	Player v = (Player) sender;
-	        v.kickPlayer(logoffDisplay);
+	        v.kickPlayer(ChatColor.translateAlternateColorCodes('&', logoffDisplay));
 	    }
 	
   if(cmd.getName().equalsIgnoreCase("aunfreeze") || cmd.getName().equalsIgnoreCase("unfreeze") ) {
@@ -545,7 +545,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 		  	}
 		  
 		  plugin.datacore.set("users." + args[0] + ".frozen", false);
-		  Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unfreezeDisplay).replaceAll("%auth", s.getDisplayName()).replaceAll("%player", p.getDisplayName()));
+		  Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unfreezeDisplay).replaceAll("%auth", s.getDisplayName()).replaceAll("%afull", s.getName()).replaceAll("%player", p.getDisplayName()).replaceAll("%name", p.getName()));
 		  return true;
 	  }
 	  
@@ -649,7 +649,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 					}, 0L, 5L);
 				
 			}
-		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', freezeDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%player", p2.getDisplayName()).replaceAll("%reason", reason));
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', freezeDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%player", p2.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", p2.getName()));
         return true;
 		}
 		
@@ -709,7 +709,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 			
 		}
 		
-		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', freezeDisplay).replaceAll("%auth", "console").replaceAll("%player", p2.getDisplayName()).replaceAll("%reason", reason));
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', freezeDisplay).replaceAll("%auth", "console").replaceAll("%player", p2.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", p2.getName()));
         return true;
 	}
 	
@@ -756,11 +756,11 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 				
             Player p2 = (Player) sender;
 			plugin.datacore.set("users." + p.getName() + "." + "Warnings.Restrictions.Auth" + restriction_warnings2, p2.getDisplayName());
-			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', restrictDisplay).replaceAll("%auth", p2.getDisplayName()).replaceAll("%player", p2.getDisplayName()).replaceAll("%reason", reason));
+			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', restrictDisplay).replaceAll("%auth", p2.getDisplayName()).replaceAll("%afull", p2.getName()).replaceAll("%player", p.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", p.getName()));
 		    return true;
 		    
 			}
-			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', restrictDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()).replaceAll("%reason", reason));
+			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', restrictDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", p.getName()));
 			 plugin.datacore.set("users." + p.getName() + "." + "Warnings.Restrictions.Auth" + restriction_warnings2, "console");
 			}
 
@@ -796,12 +796,12 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 				
 				
 	            Player p2 = (Player) sender;
-	            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unrestrictDisplay).replaceAll("%auth", p2.getDisplayName()).replaceAll("%player", p.getDisplayName()));
+	            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unrestrictDisplay).replaceAll("%auth", p2.getDisplayName()).replaceAll("%afull", p2.getName()).replaceAll("%player", p.getDisplayName()).replaceAll("%name", p.getName()));
 			    return true;
 				}
 				
 
-			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unrestrictDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()));
+			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unrestrictDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()).replaceAll("%name", p.getName()));
 
 				}
 	
@@ -842,7 +842,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 			plugin.datacore.set("BanReason." + args[0], reason);
 			plugin.datacore.set("users." + args[0] + "." + "Warnings.Bans.Auth" + ban_warnings2, p.getDisplayName());
 		    banned.kickPlayer(ChatColor.RED + "Banned by " + p.getDisplayName() + ChatColor.WHITE + " (" + reason + ChatColor.WHITE + ")");
-		    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', banDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%player", p.getDisplayName()).replaceAll("%reason", reason));
+		    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', banDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%afull", p.getName()).replaceAll("%player", banned.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", banned.getName()));
 		
 		    
 		} else {
@@ -879,7 +879,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 			plugin.datacore.set("BanReason." + args[0], reason);
 			plugin.datacore.set("users." + args[0] + "." + "Warnings.Bans.Auth" + ban_warnings2, p.getDisplayName());
 		    banned.kickPlayer(ChatColor.RED + "Banned by console" + ChatColor.WHITE + " (" + reason + ChatColor.WHITE + ")");
-		    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', banDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()).replaceAll("%reason", reason));
+		    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', banDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", p.getName()));
 
 			
 		}
@@ -921,7 +921,7 @@ if(cmd.getName().equalsIgnoreCase("amute") || cmd.getName().equalsIgnoreCase("mu
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Mutes.Reason" + kick_warnings2, reason);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Mutes.Auth" + kick_warnings2, p.getDisplayName());
 	    
-		 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', muteDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%player", p.getDisplayName()).replaceAll("%reason", reason));
+		 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', muteDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%afull", p.getName()).replaceAll("%player", muted.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", muted.getName()));
 	
 	} else {
 		
@@ -954,7 +954,7 @@ if(cmd.getName().equalsIgnoreCase("amute") || cmd.getName().equalsIgnoreCase("mu
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Mutes.Reason" + kick_warnings2, reason);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Mutes.Auth" + kick_warnings2, "console");
 	    
-		 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', muteDisplay).replaceAll("%auth", "console").replaceAll("%player", muted.getDisplayName()).replaceAll("%reason", reason));
+		 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', muteDisplay).replaceAll("%auth", "console").replaceAll("%player", muted.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", muted.getName()));
 
 		
 	}
@@ -999,11 +999,11 @@ if(cmd.getName().equalsIgnoreCase("awarn") || cmd.getName().equalsIgnoreCase("wa
 	
 	if (sender instanceof Player){
 	plugin.datacore.set("users." + args[0] + ".Warnings.Generals.Auth" + general_warnings2, p.getDisplayName());
-	 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', generalDisplay).replaceAll("%auth", p2.getDisplayName()).replaceAll("%player", p.getDisplayName()));
+	 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', generalDisplay).replaceAll("%auth", p2.getDisplayName()).replaceAll("%afull", p2.getName()).replaceAll("%player", p.getDisplayName()).replaceAll("%name", p.getName()).replaceAll("%reason", message));
 	return true;
 	}
 	plugin.datacore.set("users." + args[0] + ".Warnings.Generals.Auth" + general_warnings2, "console");
-	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', generalDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()));
+	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', generalDisplay).replaceAll("%auth", "console").replaceAll("%player", p.getDisplayName()).replaceAll("%name", p.getName()).replaceAll("%reason", message));
 	
 }
 
@@ -1032,10 +1032,10 @@ if(cmd.getName().equalsIgnoreCase("aunmute") || cmd.getName().equalsIgnoreCase("
 	
 	plugin.datacore.set("users." + args[0] + ".muted", null);
 	if (sender instanceof Player) {
-	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unmuteDisplay).replaceAll("%auth", unmuter.getDisplayName()).replaceAll("%player", mutedPlayer.getDisplayName()));
+	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unmuteDisplay).replaceAll("%auth", unmuter.getDisplayName()).replaceAll("%afull", unmuter.getName()).replaceAll("%player", mutedPlayer.getDisplayName()).replaceAll("%name", mutedPlayer.getName()));
 	return true;
 	}
-	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unmuteDisplay).replaceAll("%auth", "console").replaceAll("%player", mutedPlayer.getDisplayName()));
+	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unmuteDisplay).replaceAll("%auth", "console").replaceAll("%player", mutedPlayer.getDisplayName()).replaceAll("%name", mutedPlayer.getName()));
 }
 
 if(cmd.getName().equalsIgnoreCase("aunban")) {
@@ -1089,7 +1089,7 @@ if(cmd.getName().equalsIgnoreCase("akick") || cmd.getName().equalsIgnoreCase("ki
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Total", kick_warnings2);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Reason" + kick_warnings2, reason);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Auth" + kick_warnings2, p.getDisplayName());
-		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason));
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%afull", p.getName()).replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", k.getName()));
 	}else if(args.length > 1){
 		int overall_warnings = plugin.datacore.getInt("users." + args[0] + "." + "Warnings.Overall");
 		int kick_warnings = plugin.datacore.getInt("users." + args[0] + "." + "Warnings.Kicks.Total");
@@ -1101,7 +1101,7 @@ if(cmd.getName().equalsIgnoreCase("akick") || cmd.getName().equalsIgnoreCase("ki
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Total", kick_warnings2);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Reason" + kick_warnings2, reason);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Auth" + kick_warnings2, p.getDisplayName());
-		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason));
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", p.getDisplayName()).replaceAll("%afull", p.getName()).replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", k.getName()));
 	}
 	
 	}else{
@@ -1124,7 +1124,7 @@ if(cmd.getName().equalsIgnoreCase("akick") || cmd.getName().equalsIgnoreCase("ki
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Total", kick_warnings2);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Reason" + kick_warnings2, reason);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Auth" + kick_warnings2, "console");
-		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", "console").replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason));
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", "console").replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", k.getName()));
 	}else if(args.length > 1){
 		int overall_warnings = plugin.datacore.getInt("users." + args[0] + "." + "Warnings.Overall");
 		int kick_warnings = plugin.datacore.getInt("users." + args[0] + "." + "Warnings.Kicks.Total");
@@ -1136,7 +1136,7 @@ if(cmd.getName().equalsIgnoreCase("akick") || cmd.getName().equalsIgnoreCase("ki
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Total", kick_warnings2);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Reason" + kick_warnings2, reason);
 		plugin.datacore.set("users." + args[0] + "." + "Warnings.Kicks.Auth" + kick_warnings2, "console");
-		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", "console").replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason));
+		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', kickDisplay).replaceAll("%auth", "console").replaceAll("%player", k.getDisplayName()).replaceAll("%reason", reason).replaceAll("%name", k.getName()));
 	}
 	
 	}else{

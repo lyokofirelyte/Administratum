@@ -75,8 +75,22 @@ public class JoinListen implements Listener {
 	
 }
 	
-	}
+	if (plugin.datacore.getStringList("WatchList").contains(event.getPlayer().getName()) && plugin.config.getBoolean("WatchListNotify")){
+		
+		for (Player currentPlayer : Bukkit.getOnlinePlayers()){
+			
+			if (currentPlayer.hasPermission("administratum.watchlist")){
+				
+				String watchListLoginDisplay = plugin.styles.getString("Themes.Events.WatchListLogin");
+				currentPlayer.sendMessage(plugin.AS(watchListLoginDisplay.replaceAll("%player", event.getPlayer().getDisplayName()).replaceAll("%name", event.getPlayer().getName())));
+				
+			}
+			
+		}
+		
 	
+	}
+}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDepart(final PlayerQuitEvent event) {

@@ -1,0 +1,134 @@
+name: AbsoluteAdministratum
+main: com.github.lyokofirelyte.Administratum.AdministratumMain
+version: 2.2
+
+commands:
+   logoff:
+      description: Log out.
+      usage: /logoff
+      permission: administratum.logoff
+      permission-message: Nope.jpg
+   alogoff:
+      description: Log out.
+      usage: /alogoff
+      permission: administratum.logoff
+      permission-message: Nope.jpg
+   kick:
+      description: Kick someone from the server
+      usage: /kick <player> <reason>
+      permission: administratum.kick
+      permission-message: Nope.jpg
+   akick:
+      description: Kick someone from the server
+      usage: /akick <player> <reason>
+      permission: administratum.kick
+      permission-message: Nope.jpg
+   mute:
+      description: Prevent someone from speaking
+      usage: /mute <player> <reason>
+      permission: administratum.mute
+      permission-message: Nope.jpg
+   amute:
+      description: Prevent someone from speaking
+      usage: /amute <player> <reason>
+      permission: administratum.mute
+      permission-message: Nope.jpg
+   unmute:
+      description: Allow someone to speak.
+      usage: /unmute <player>
+      permission: administratum.mute
+      permission-message: Nope.jpg
+   aunmute:
+      description: Allow someone to speak.
+      usage: /aunmute <player>
+      permission: administratum.mute
+      permission-message: Nope.jpg
+   warn:
+      description: Issue a warning
+      usage: /warn <player> <reason>
+      permission: administratum.warn
+      permission-message: Nope.jpg
+   awarn:
+      description: Issue a warning
+      usage: /awarn <player> <reason>
+      permission: administratum.warn
+      permission-message: Nope.jpg
+   aban:
+      description: Ban someone
+      usage: /aban <player> <reason>
+      permission: administratum.ban
+      permission-message: Nope.jpg
+   aunban:
+      description: Unban someone
+      usage: /aunban <player> <reason>
+      permission: administratum.ban
+      permission-message: Nope.jpg
+   freeze:
+      description: Freeze someone
+      usage: /freeze <player> <reason>
+      permission: administratum.freeze
+      permission-message: Nope.jpg
+   unfreeze:
+      description: Un-freeze someone
+      usage: /unfreeze <player>
+      permission: administratum.freeze
+      permission-message: Nope.jpg
+   afreeze:
+      description: Freeze someone
+      usage: /afreeze <player> <reason>
+      permission: administratum.freeze
+      permission-message: Nope.jpg
+   aunfreeze:
+      description: Un-freeze someone
+      usage: /aunfreeze <player>
+      permission: administratum.freeze
+      permission-message: Nope.jpg
+   a:
+      description: General Administratum Command
+      usage: /a help
+      permission: administratum.use
+      permission-message: Nope.jpg
+   evac:
+      description: Freeze, mute, and restrict all players that are not on the evacExempt list.
+      usage: /evac
+      permission: administratum.evac
+      permission-message: Nope.jpg
+   aevac:
+      description: Freeze, mute, and restrict all players that are not on the evacExempt list.
+      usage: /aevac
+      permission: administratum.evac
+      permission-message: Nope.jpg
+   restrict:
+      description: Stop someone from breaking/placing blocks
+      usage: /a restrict <player>
+      permission: administratum.restrict
+      permission-message: Nope.jpg
+   unrestrict:
+      description: Allow block break/place again
+      usage: /a unrestrict <player>
+      permission: administratum.restrict
+      permission-message: Nope.jpg
+   arestrict:
+      description: Stop someone from breaking/placing blocks
+      usage: /a restrict <player>
+      permission: administratum.restrict
+      permission-message: Nope.jpg
+   aunrestrict:
+      description: Allow block break/place again
+      usage: /a unrestrict <player>
+      permission: administratum.restrict
+      permission-message: Nope.jpg
+   watchlist:
+      description: Administratum WatchList command
+      usage: /watchlist add <player> <reason>, /watchlist rem <player>, /watchlist view
+      permission: administratum.watchlist
+      permission-message: Nope.jpg
+   awatchlist:
+      description: Administratum WatchList command
+      usage: /watchlist add <player> <reason>, /watchlist rem <player>, /watchlist view
+      permission: administratum.watchlist
+      permission-message: Nope.jpg
+permissions:
+    administratum.watchlist.alerts:
+        description: Receive alerts when someone on the watchlist logs in.
+        default: op

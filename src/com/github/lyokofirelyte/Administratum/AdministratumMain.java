@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -19,7 +20,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
+import org.bukkit.entity.Player;
 
 public class AdministratumMain extends JavaPlugin implements CommandExecutor {
 	
@@ -67,6 +68,8 @@ public void onEnable(){
 	getCommand("evac").setExecutor(new CommandEx(this));
 	getCommand("aevac").setExecutor(new CommandEx(this));
 	getCommand("a").setExecutor(this);
+	getCommand("watchlist").setExecutor(this);
+	getCommand("awatchlist").setExecutor(this);
 	Plugin herochat = getServer().getPluginManager().getPlugin("Herochat");
 	Plugin mcbans = getServer().getPluginManager().getPlugin("MCBans");
 	configFile = new File(getDataFolder(), "config.yml");
@@ -80,23 +83,15 @@ public void onEnable(){
 		e.printStackTrace();
 	}
 	
-		int x = 30;
-		
-		while (x > 0){
-			
-			Bukkit.broadcastMessage(ChatColor.RED + "SHE CAN CODE YOU GOOD, BUT I CAN CODE YOU BETTER!");
-			x--;
-			
-		}
-	
 	config = new YamlConfiguration();
 	datacore = new YamlConfiguration();
 	styles = new YamlConfiguration();
 	loadYamls();
 	
 	String bootUp = styles.getString("Themes.Console.BootUp");
-
 	
+	updateCheck();
+
 	getLogger().info(bootUp);
 
 	if (herochat != null) {
@@ -109,58 +104,82 @@ public void onEnable(){
 	getLogger().log(Level.INFO, "Thank you for downloading and using my plugin! It means a lot to me.");
 }
 
-String[] help1 = new String[] {
+List <String> helpGlobal = Arrays.asList("&cADMINISTRATUM: COMPLETE. AUTHORITATIVE. CONTROL.", 
+									"&4.....&6g&4..&6l&4..&6o&4..&6b&4..&6a&4..&6l&4.....&6h&4..&6e&4..&6l&4..&6p&4.....",
+									"&8| &c/a help selection &f// &cHelp menu for selection & lookups.",
+									"&8| &c/a help actions &f// &cHelp menu for authoritative actions.",
+									"&8| &c/a help filters &f// &cChat filter configuration help.",
+									"&8| &c/a help channels &f// &cChat channel configuration options.",
+									"&8| &c/a help watchlist &f// &cWatchlist management.",
+									"&8| &c/a help events &f// &cJoin / Quit message help.",
+									"&8| &c/a help plugin &f// &cUnder-the-hood plugin options.",
+									"&8| &c&o/a help search <query> &f&o// &c&oSearch the Administratum database for help.");
+
+List <String> helpSelection = Arrays.asList("&cAdministratum &4// &e&oSelection & Lookups",
+									"&8| &3/a sel <player> &9// &3Select <player> to lookup info on.",
+									"&8| &3/a s <player> &9// &3Select yourself as the selected player.",
+									"&8| &3/a k <player> &9// &3Kick lookup on selected player.",
+									"&8| &3/a m <player> &9// &3Mute lookup on selected player.",
+									"&8| &3/a g <player> &9// &3General lookup on selected player.",
+									"&8| &3/a a <player> &9// &3Automatic Action lookup on selected player.",
+									"&8| &3/a f <player> &9// &3Freeze lookup on selected player.",
+									"&8| &3/a r <player> &9// &3Restriction lookup on selected player.");
+
+List <String> helpActions = Arrays.asList("&cAdministratum &4// &e&oAuthoritative Actions",
+									"&8| &3/aban <player> <reason> &9// &3Ban someone.",
+									"&8| &3/aunban <player> &9// &3Unban someone.",
+									"&8| &3/mute <player> <reason> &9// &3Perma-mute someone.",	
+									"&8| &3/unmute <player> &9// &3Un-mute someone.",
+									"&8| &3/freeze <player> <reason> &9// &3Freeze someone.",
+									"&8| &3/unfreeze <player> &9// &3Un-freeze someone.",
+									"&8| &3/warn <player> <reason> &f// &3Broadcast & record a general warning.",
+									"&8| &3/restrict <player> &9// &3Prevent <player> from breaking/placing blocks.",
+									"&8| &3/unrestrict <player> &9// &3Allow <player> to break/place blocks again.",
+									"&8| &3/evac &9// &3Freeze, mute, and restrict all players that are not on the evacExempt list.",
+									"&8| &3/logoff &9// &3Logs you out of the server. You'll be 27% cooler if you use this command.",
+									"&8&oAdd 'a' in front of any of the above commands to override another plugin...");
+
+List <String> helpFilters = Arrays.asList("&cAdministratum &4// &e&oFilter Management",
+									"&8| &3/a filter add <word> <new phrase> &9// &3Add a filter to the config.",
+									"&8| &3/a filter remove <word> &9// &3Remove a filter.",
+									"&8| &3/a nowarn <word> &9// &3Keep the filter but turn off warnings for <word>.",
+									"&8| &3/a warn <word> &9// &3Turn warnings back on for <word>.",
+									"&8| &3/a ex <player> &9// &3Add <player> to the exemption list for automatic warnings.",
+									"&8| &3/a -ex <player> &9// &3Remove <player> from the exemption list.");
+
+List <String> helpChannels = Arrays.asList("&cAdministratum &4// &e&oChannel Configuration");
+
+
+List <String> helpWatchlist = Arrays.asList("&cAdministratum &4// &e&oWatchList",
+									"&8| &3/watchlist add <player> <reason> &9// &3Add <player> to the watchlist.",
+									"&8| &3/watchlist rem <player> &9// &3Remove <player> from the watchlist.",
+									"&8| &3/watchlist edit <player> <new reason> &9// &3Edit the reason for <player> in the watchlist.",
+									"&8| &3/watchlist toggle &9// &3Toggle the on-join notification option.",
+									"&8| &3/watchlist view &9// &3View the watchlist.",
+									"&8&oAdd 'a' in front of any of the above commands to override another plugin...");
+
+List <String> helpEvents = Arrays.asList("&cAdministratum &4// &e&oEvent Configuration (Requires values set TRUE in config)",
+									"&8| &3/a join add <phrase> &9// &3Add a new login message into the random rotation.",
+									"&8| &3/a join remove <phrase> &9// &3Remove a login message from the random rotation.",
+									"&8| &3/a join list <phrase> &9// &3View the login messages.",
+									"&8| &3/a quit add <phrase> &9// &3Add a new quit message into the random rotation.",
+									"&8| &3/a quit remove <phrase> &9// &3Remove a quit message from the random rotation.",
+									"&8| &3/a quit list <phrase> &9// &3View the quit messages.");
 		
-	    ChatColor.RED + "ADMINISTRATUM: COMPLETE. AUTHORITATIVE. CONTROL.",
-	    ChatColor.DARK_RED + "..............................",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a sel <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Select <player> to lookup info on.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a k" + ChatColor.WHITE + " // " + ChatColor.RED + "Kick lookup on selected player.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a m" + ChatColor.WHITE + " // " + ChatColor.RED + "Mute lookup on selected player.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a g" + ChatColor.WHITE + " // " + ChatColor.RED + "General Warning lookup on selected player.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a a" + ChatColor.WHITE + " // " + ChatColor.RED + "Automatic Action lookup on selected player.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a f" + ChatColor.WHITE + " // " + ChatColor.RED + "Freeze lookup on selected player.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a r" + ChatColor.WHITE + " // " + ChatColor.RED + "Restriction lookup on selected player.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a s" + ChatColor.WHITE + " // " + ChatColor.RED + "Check your own status without selecting yourself.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a ex <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Add <player> to the automatic warning exemption list.",
-	    ChatColor.GRAY + "| " + ChatColor.RED + "/a -ex <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Remove <player> from the automatic warning exemption list.",
-	    ChatColor.GRAY + italic + "More help @ /a help2"
-				
-		};
+List <String> helpPlugin = Arrays.asList("&cAdministratum &4// &e&oPlugin Options",
+									"&8| &3/a save &9// &3Save config, datacore, and style sheet.",
+									"&8| &3/a reload &9// &3Reload config, datacore, and style sheet.",
+									"&8| &3/a disable &9// &3Disable the plugin, making it appear red in your plugin list.",
+									"&8| &3/a restart &9// &3Restart the plugin as if you reloaded it. *Debugging use only.",
+									"&8| &3/a version &9// &3What version of the plugin are you running?");
 
-String[] help2 = new String[] {
-		ChatColor.GRAY + "| " + ChatColor.RED + "/aban <player> <reason>" + ChatColor.WHITE + " // " + ChatColor.RED + "Issue an Administratum ban.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/aunban <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Unban someone.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/mute <player> <reason>" + ChatColor.WHITE + " // " + ChatColor.RED + "Perma-mute someone.",	
-		ChatColor.GRAY + "| " + ChatColor.RED + "/unmute <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Un-mute someone.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/freeze <player> <reason>" + ChatColor.WHITE + " // " + ChatColor.RED + "Freeze someone.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/unfreeze <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Un-freeze someone.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/warn <player> <reason>" + ChatColor.WHITE + " // " + ChatColor.RED + "Broadcast & record a general warning.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/restrict <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Prevent <player> from breaking/placing blocks.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/unrestrict <player>" + ChatColor.WHITE + " // " + ChatColor.RED + "Allow <player> to break/place blocks again.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/evac" + ChatColor.WHITE + " // " + ChatColor.RED + "Freeze, mute, and restrict all players that are not on the evacExempt list.",
-		ChatColor.GRAY + italic + "Add 'a' in front of any of the commands to override another plugin...",
-		ChatColor.GRAY + italic + "More help @ /a help3"
-				
-		};
 
-String[] help3 = new String[] {
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a filter add <word> <filtered>" + ChatColor.WHITE + " // " + ChatColor.RED + "Add a filter to the config.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a filter remove <word>" + ChatColor.WHITE + " // " + ChatColor.RED + "Remove a filter.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a nowarn <word>" + ChatColor.WHITE + " // " + ChatColor.RED + "Keep the filter but turn off warnings.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a warn <word>" + ChatColor.WHITE + " // " + ChatColor.RED + "Turn back on automatic warnings for <word>.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a save" + ChatColor.WHITE + " // " + ChatColor.RED + "Save config.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a reload" + ChatColor.WHITE + " // " + ChatColor.RED + "Reload config from file.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a disable" + ChatColor.WHITE + " // " + ChatColor.RED + "Disable the plugin, making it appear red on your plugin list.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a restart" + ChatColor.WHITE + " // " + ChatColor.RED + "Disable and re-enable the plugin.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a join add <phrase>" + ChatColor.WHITE + " // " + ChatColor.RED + "Add a new login message!",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a join remove <phrase>" + ChatColor.WHITE + " // " + ChatColor.RED + "Remove a login message!",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a join list" + ChatColor.WHITE + " // " + ChatColor.RED + "List your login messages.",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a quit add <phrase>" + ChatColor.WHITE + " // " + ChatColor.RED + "Add a new logoff message!",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a quit remove <phrase>" + ChatColor.WHITE + " // " + ChatColor.RED + "Remove a logoff message!",
-		ChatColor.GRAY + "| " + ChatColor.RED + "/a quit list" + ChatColor.WHITE + " // " + ChatColor.RED + "List your logoff messages.",
-		ChatColor.GRAY + italic + "Remember to suggest new features and report bugs on the Administratum Bukkit page!"
-				
-		};
+public String AS(String DecorativeToasterCozy){
+	
+	String FlutterShysShed = ChatColor.translateAlternateColorCodes('&', DecorativeToasterCozy);
+	return FlutterShysShed;
+	
+}
 
 
 @Override 
@@ -169,9 +188,159 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 	
 
 	switch (cmd.getName()){
-	
-		case "a":		
+
+		case "watchlist": case "awatchlist":
+
+			String watchListAddDisplay = styles.getString("Themes.Events.WatchListAdd");
+			String watchListRemDisplay = styles.getString("Themes.Events.WatchListRem");
+			String watchListEditDisplay = styles.getString("Themes.Events.WatchListEdit");
+			String menuHeader2 = styles.getString("Themes.Headers.Menus");
 			
+			switch (args.length){
+			
+				case 0: 
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', menuHeader2) + " Let's try /watchlist add <player> <reason>, /watchlist rem <player>, or /watchlist view instead.");
+					break;
+					
+				case 1: case 2:
+					
+					if (args[0].equalsIgnoreCase("toggle")){
+						
+						if (config.getBoolean("WatchListNotify")){
+							config.set("WatchListNotify", false);
+							sender.sendMessage(AS(menuHeader2 + "Staff will no longer receive notifications when users on the watchlist log in."));
+							break;
+						} else {
+							config.set("WatchListNotify", true);
+							sender.sendMessage(AS(menuHeader2 + "Staff will receive notifications when users on the watchlist log in."));
+							break;
+						}
+						
+					}
+					
+					if (args[0].equalsIgnoreCase("view")){
+						
+						List <String> watchList = datacore.getStringList("WatchList");
+						int x = 0;
+							if (watchList.size() == 0){
+								sender.sendMessage(AS(menuHeader2 + "The watchlist is empty!"));
+								break;
+							}
+							
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', menuHeader2 + "&3WatchList &f(&3ID &4// &c&oPlayer &4// &6Reason &4// &cAuth&f)"));
+						
+							for (String currentList : watchList){
+								x++;
+								
+								String message = datacore.getString("Users." + currentList + ".WatchListReason");
+								String auth = datacore.getString("Users." + currentList + ".WatchListAuth");
+								sender.sendMessage(AS("&3" + x + " &4// &c&o" + currentList + " &4// &6" + message + " &4// " + auth));
+							}
+							
+					} 
+					
+					
+					else if (args[0].equalsIgnoreCase("rem")){
+						
+						List <String> watchList = datacore.getStringList("WatchList");
+							if (!watchList.contains(args[1])){
+							
+								sender.sendMessage(AS(menuHeader2 + "That player is not on the watchlist."));
+								break;
+							}
+							
+						Player player2 = (Player) sender;
+						watchList.remove(args[1]);
+						datacore.set("Users." + args[1] + ".WatchListReason", null);
+						datacore.set("Users." + args[1] + ".WatchListAuth", null);
+						datacore.set("WatchList", watchList);
+						sender.sendMessage(AS(menuHeader2 + "Removed &4&o" + args[1] + " &cfrom the watchlist!"));
+							for (Player currentPlayer : Bukkit.getOnlinePlayers()){
+							
+								if (currentPlayer.hasPermission("administratum.watchlist")){
+
+									currentPlayer.sendMessage(AS(watchListRemDisplay.replaceAll("%player", args[1]).replaceAll("%auth", player2.getDisplayName()).replaceAll("%name", args[1]).replaceAll("%afull", player2.getName())));
+								
+								}
+							
+							}
+						saveYamls();
+						break;
+					
+				
+					} else {
+						
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', menuHeader2) + " Let's try /watchlist add <player> <reason>, /watchlist rem <player>, or /watchlist view instead.");
+					}
+					
+					break;
+					
+				default:
+
+					
+					if (args[0].equalsIgnoreCase("add")){
+						
+						Player player2 = (Player) sender;
+						List <String> watchList = datacore.getStringList("WatchList");
+							if (watchList.contains(args[1])){
+								
+								sender.sendMessage(AS(menuHeader2 + "That player is already on the watchlist."));
+								break;
+							}
+						String message = createString(args, 2);
+						watchList.add(args[1]);
+						datacore.set("Users." + args[1] + ".WatchListReason", message);
+						datacore.set("Users." + args[1] + ".WatchListAuth", player2.getDisplayName());
+						datacore.set("WatchList", watchList);
+						sender.sendMessage(AS(menuHeader2 + "Added &4&o" + args[1] + " &cto the watchlist!"));
+						
+						for (Player currentPlayer : Bukkit.getOnlinePlayers()){
+							
+							if (currentPlayer.hasPermission("administratum.watchlist")){
+
+								currentPlayer.sendMessage(AS(watchListAddDisplay.replaceAll("%player", args[1]).replaceAll("%auth", player2.getDisplayName()).replaceAll("%name", args[1]).replaceAll("%afull", player2.getName())));
+								
+							}
+							
+						}
+						saveYamls();
+						break;
+					}
+					
+					if (args[0].equalsIgnoreCase("edit")){
+						
+						Player player2 = (Player) sender;
+						List <String> watchList = datacore.getStringList("WatchList");
+							if (!watchList.contains(args[1])){
+								
+								sender.sendMessage(AS(menuHeader2 + "That player is not on the watchlist."));
+								break;
+							}
+						String message = createString(args, 2);
+						datacore.set("Users." + args[1] + ".WatchListReason", message);
+						sender.sendMessage(AS(menuHeader2 + "Edited &4&o" + args[1] + " &cin the watchlist!"));
+						
+						for (Player currentPlayer : Bukkit.getOnlinePlayers()){
+							
+							if (currentPlayer.hasPermission("administratum.watchlist")){
+								
+								currentPlayer.sendMessage(AS(watchListEditDisplay.replaceAll("%player", args[1]).replaceAll("%auth", player2.getDisplayName()).replaceAll("%name", args[1]).replaceAll("%afull", player2.getName())));
+								
+							}
+							
+						}
+						saveYamls();
+						break;
+					}
+
+					
+					break;
+
+			}
+			
+		break;
+	
+		case "a":	
 
 			String menuHeader = styles.getString("Themes.Headers.Menus");
 			String selectionColor1 = styles.getString("Themes.Headers.SelectionColors.Color1");
@@ -182,7 +351,9 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 			
 				default: case 0: 
 					
-					sender.sendMessage(help1);
+					for (String rainbowDash : helpGlobal){
+					sender.sendMessage(AS(rainbowDash));
+					}
 					break;
 					
 				case 1:
@@ -191,19 +362,11 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 					
 						default: case "help": case "?":
 							
-							sender.sendMessage(help1);
+							for (String rainbowDash : helpGlobal){
+								sender.sendMessage(AS(rainbowDash));
+								}
 							break;
-						
-						case "help2":
-							
-							sender.sendMessage(help2);
-							break;
-							
-						case "help3":
-							
-							sender.sendMessage(help3);
-							break;
-						
+												
 						case "reload":
 							
 							loadYamls();
@@ -229,6 +392,11 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 						case "filter":
 							
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', menuHeader) + " Correct usage is /a filter add <word> <new word> or /a filter remove <word>.");
+							break;
+							
+						case "version":
+							
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', menuHeader) + " How the hell should I know? You're the one who downloaded the damn thing.");
 							break;
 							
 						case "nowarn":
@@ -347,8 +515,64 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 					
 						default:
 							
-							sender.sendMessage(help1);
+							for (String rainbowDash : helpGlobal){
+								sender.sendMessage(AS(rainbowDash));
+								}
 							break;
+							
+						case "help":
+
+							switch (args[1].toLowerCase()){
+							
+							case "selection":
+								for (String appleJack : helpSelection){
+									sender.sendMessage(AS(appleJack));
+									}
+								break;
+								
+							case "actions":
+								for (String twilightSparkle : helpActions){
+									sender.sendMessage(AS(twilightSparkle));
+									}
+								break;
+								
+							case "filters":
+								for (String pinkiePie : helpFilters){
+									sender.sendMessage(AS(pinkiePie));
+									}
+								break;
+								
+							case "channels":
+								for (String rainbowDash : helpChannels){
+									sender.sendMessage(AS(rainbowDash));
+									}
+								break;
+								
+							case "watchlist":
+								for (String rarity : helpWatchlist){
+									sender.sendMessage(AS(rarity));
+									}
+								break;
+								
+							case "events":
+								for (String flutterShy : helpEvents){
+									sender.sendMessage(AS(flutterShy));
+									}
+								break;
+								
+							case "plugin":
+								for (String spikeTheDragon : helpPlugin){
+									sender.sendMessage(AS(spikeTheDragon));
+									}
+								break;
+								
+							case "search":		
+								sender.sendMessage(AS(menuHeader + "Please type /a help search <query>."));						
+								break;
+							
+							}
+							
+						break;
 							
 						case "quit":
 							
@@ -550,9 +774,78 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 					
 						default:
 							
-							sender.sendMessage(help1);
+							for (String rainbowDash : helpGlobal){
+								sender.sendMessage(AS(rainbowDash));
+								}
 							break;
-					
+							
+						case "help":
+							
+							if (args[1].equalsIgnoreCase("search")){
+								
+								int results = 0;
+								
+								String searchQuery = createString(args, 3);
+								
+									for (String discord : helpSelection){
+										if (discord.toLowerCase().contains(searchQuery.toLowerCase())){
+											sender.sendMessage(AS(discord));
+											results++;
+										}
+									}
+									
+									for (String princessCelestia : helpActions){
+										if (princessCelestia.toLowerCase().contains(searchQuery.toLowerCase())){
+											sender.sendMessage(AS(princessCelestia));
+											results++;
+										}
+									}
+									
+									for (String princessLuna : helpFilters){
+										if (princessLuna.toLowerCase().contains(searchQuery.toLowerCase())){
+											sender.sendMessage(AS(princessLuna));
+											results++;
+										}
+									}
+									
+									for (String mrsFrizzle : helpChannels){
+										if (mrsFrizzle.toLowerCase().contains(searchQuery.toLowerCase())){
+											sender.sendMessage(AS(mrsFrizzle));
+											results++;
+										}
+									}
+									
+									for (String trixie : helpWatchlist){
+										if (trixie.toLowerCase().contains((searchQuery.toLowerCase()))){
+											sender.sendMessage(AS(trixie));
+											results++;
+										}
+									}
+									
+									for (String cutieMarkCrusaders : helpEvents){
+										if (cutieMarkCrusaders.toLowerCase().contains(searchQuery.toLowerCase())){
+											sender.sendMessage(AS(cutieMarkCrusaders));
+											results++;
+										}
+									}
+									
+									for (String rainbowFactory : helpPlugin){
+										if (rainbowFactory.toLowerCase().contains(searchQuery.toLowerCase())){
+											sender.sendMessage(AS(rainbowFactory));
+											results++;
+										}
+									}
+									
+									sender.sendMessage(AS("&8&oWe found " + results + " &8&oresults for this search."));
+									break;
+											
+							} else {
+								for (String rainbowDash : helpGlobal){
+									sender.sendMessage(AS(rainbowDash));
+									}
+								break;
+							}
+
 						case "filter":
 							
 							if (args[1].equalsIgnoreCase("add")){
@@ -834,6 +1127,7 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 		z++;
 		x--;
 		}
+		sender.sendMessage(ChatColor.GRAY + italic + "Want more? Type /a <letter> <number> to show a specific action.");
 		break;
 		
 	case 5: case 6: case 7: case 8:
@@ -850,6 +1144,7 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 		z3++;
 		x3--;
 		}
+		sender.sendMessage(ChatColor.GRAY + italic + "Want more? Type /a <letter> <number> to show a specific action.");
 		break;
 		
 	default:
@@ -865,12 +1160,43 @@ String lookupDivider = styles.getString("Themes.Headers.LookupDivider");
 		z2++;
 		x2--;	
 		}			
-		sender.sendMessage(ChatColor.GRAY + italic + "Next page? /a <type>2");
+		sender.sendMessage(ChatColor.GRAY + italic + "Want more? Type /a <letter> <number> to show a specific action.");
 		break;
 
     }
 	
 	
+	
+}
+
+public void updateCheck(){
+	
+	if (config.getString("WatchListNotify") == null){
+		config.set("WatchListNotify", true);	
+	}
+	if (config.getString("UseJoinMessages") == null){
+		config.set("UseJoinMessages", false);	
+	}
+	if (config.getString("UseQuitMessages") == null){
+		config.set("UseQuitMessages", false);	
+	}
+	if (config.getString("freezeEffect") == null){
+		config.set("freezeEffect", false);	
+	}
+	if (styles.getString("Themes.Events.WatchListAdd") == null){
+		styles.set("Themes.Events.WatchListAdd", "&cAdministratum &4// &c%player &cwas added to the Administratum watchlist by %auth");	
+	}
+	if (styles.getString("Themes.Events.WatchListRem") == null){
+		styles.set("Themes.Events.WatchListRem", "&cAdministratum &4// &c%player &cwas removed from the Administratum watchlist by %auth");	
+	}
+	if (styles.getString("Themes.Events.WatchListEdit") == null){
+		styles.set("Themes.Events.WatchListEdit", "&cAdministratum &4// &c%player &cwas edited in the Administratum watchlist by %auth");	
+	}
+	if (styles.getString("Themes.Events.WatchListLogin") == null){
+		styles.set("Themes.Events.WatchListLogin", "&cAdministratum &4// &c%player &cis on the Administratum watchlist!");	
+	}
+	
+	saveYamls();
 	
 }
 

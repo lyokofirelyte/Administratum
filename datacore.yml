@@ -1,0 +1,23 @@
+### Main Data Storage - If it ain't broke don't fix it. Look! A distraction! ###
+
+users:
+  Hugh_Jasses:
+    Warnings:
+        Overall: 0
+        Generals:
+          Total: 0
+          Reason1: null
+          Authed1: WaffleQuackers
+        Mutes:
+          Total: 0
+          Reason1: null
+          Authed1: WaffleQuackers
+        Kicks:
+          Total: 0
+          Reason1: null
+          Authed1: WaffleQuackers
+        Automatics:
+          Total: 0
+          Reason1: null
+          Authed1: system
+          Action1: warning

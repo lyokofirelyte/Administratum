@@ -1,0 +1,43 @@
+### Administratum Global Style Sheet ###
+
+Themes:
+  Headers:
+    Menus: '&cAdministratum &4// &c'
+    SelectionColors: 
+      Color1: 'e'
+      Color2: '3'
+      Color3: '7'
+    LookupColor: '3'
+    LookupDivider: '1'
+  Warnings:
+    Automatic: '&cAdministratum &4// &cWarning, %player&c, swearing is now allowed! This is warning %warning'
+    AutomaticAction: '&eAction&f: &3%action'
+    General: '&cAdministratum &4// &cWarning - %player &c- %reason'
+    Mute: '&cAdministratum &4// &c%player &cwas muted by %auth &4// %reason'
+    UnMute: '&cAdministratum &4// &c%player &cwas unmuted by %auth'
+    Kick: '&cAdministratum &4// &c%player &cwas removed from the server by %auth &4// %reason'
+    Ban: '&cAdministratum &4// &c%player &cwas forever removed from the server by %auth &4// %reason'
+    UnBan: '&cAdministratum &4// &c%player &cwas allowed to return to the server by %auth'
+    Freeze: '&cAdministratum &4// &c%player &cwas frozen by %auth &4// %reason'
+    UnFreeze: '&cAdministratum &4// &c%player &cwas unfrozen by %auth'
+    Restrict: '&cAdministratum &4// &c%player &cwas blocked from breaking and placing blocks by %auth'
+    UnRestrict: '&cAdministratum &4// &c%player &cwas allowed to break and place blocks by %auth'
+  Events:
+    LoginMessages:
+      - '&cAdministratum welcomes %player &cto the server!'
+      - '&c&oRemember, we are always watching you, %player!'
+      - '&cWelcome to the server, %player&c!'
+    QuitMessages:
+      - '&cAdministratum wishes you would have stayed longer, %player!'
+      - '&cThanks for stopping by, %player!'
+      - '&cCya later, %player!'
+    WatchListAdd: '&cAdministratum &4// &c%player &cwas added to the Administratum watchlist by %auth'
+    WatchListRem: '&cAdministratum &4// &c%player &cwas removed from the Administratum watchlist by %auth'
+    WatchListEdit: '&cAdministratum &4// &c%player &cwas edited in the Administratum watchlist by %auth'
+    WatchListLogin: '&cAdministratum &4// &c%player &cis on the Administratum watchlist!'
+    EvacOn: '&cAdministratum &4// &cA global lockdown has been initiated by %player'
+    EvacOff: '&cAdministratum &4// &cThe global lockdown has been lifted by %player'
+    Logoff: '&eYou have logged off.'
+  Console:
+    BootUp: 'Administratum active. WE ARE WATCHING YOU!'
+    ShutDown: 'Administratum inactive. WE ARE STILL WATCHING YOU!'
