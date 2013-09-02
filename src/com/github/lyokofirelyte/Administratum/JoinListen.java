@@ -41,6 +41,7 @@ public class JoinListen implements Listener {
 			
 		}
 		
+		
 		if (plugin.datacore.getBoolean("Registered." + p.getName()) == false){
 			plugin.datacore.set("Registered." + p.getName(), true);
 		}
@@ -79,7 +80,7 @@ public class JoinListen implements Listener {
 		
 		for (Player currentPlayer : Bukkit.getOnlinePlayers()){
 			
-			if (currentPlayer.hasPermission("administratum.watchlist")){
+			if (currentPlayer.hasPermission("administratum.watchlist.alerts")){
 				
 				String watchListLoginDisplay = plugin.styles.getString("Themes.Events.WatchListLogin");
 				currentPlayer.sendMessage(plugin.AS(watchListLoginDisplay.replaceAll("%player", event.getPlayer().getDisplayName()).replaceAll("%name", event.getPlayer().getName())));

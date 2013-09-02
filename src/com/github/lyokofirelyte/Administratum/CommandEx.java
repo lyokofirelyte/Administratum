@@ -136,6 +136,7 @@ if (plugin.datacore.getBoolean("events.evac") == true && plugin.config.getBoolea
 @EventHandler(priority = EventPriority.NORMAL)
 public void onCommandPreprocess(AsyncPlayerChatEvent event) { 
 	
+	
 String automaticFormat = plugin.styles.getString("Themes.Warnings.Automatic");
 String automaticActionFormat = plugin.styles.getString("Themes.Warnings.AutomaticAction");
 

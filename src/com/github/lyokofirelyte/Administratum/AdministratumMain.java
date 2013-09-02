@@ -32,9 +32,11 @@ public class AdministratumMain extends JavaPlugin implements CommandExecutor {
 	File configFile;
 	File datacoreFile;
 	File stylesFile;
+	File channelsFile;
 	FileConfiguration config;
 	FileConfiguration datacore;
 	FileConfiguration styles;
+	FileConfiguration channels;
 	
 	public String italic = ChatColor.ITALIC + "";
 
@@ -45,6 +47,7 @@ public void onEnable(){
 	PluginManager pm = getServer().getPluginManager();
 	pm.registerEvents(new CommandEx(this), this);
 	pm.registerEvents(new JoinListen(this), this);
+	pm.registerEvents(new ChatChannels(this), this);
 	getCommand("amute").setExecutor(new CommandEx(this));
 	getCommand("akick").setExecutor(new CommandEx(this));
 	getCommand("warn").setExecutor(new CommandEx(this));
@@ -67,14 +70,15 @@ public void onEnable(){
 	getCommand("alogoff").setExecutor(new CommandEx(this));
 	getCommand("evac").setExecutor(new CommandEx(this));
 	getCommand("aevac").setExecutor(new CommandEx(this));
-	getCommand("a").setExecutor(this);
 	getCommand("watchlist").setExecutor(this);
 	getCommand("awatchlist").setExecutor(this);
+	getCommand("a").setExecutor(this);
 	Plugin herochat = getServer().getPluginManager().getPlugin("Herochat");
 	Plugin mcbans = getServer().getPluginManager().getPlugin("MCBans");
 	configFile = new File(getDataFolder(), "config.yml");
 	datacoreFile = new File(getDataFolder(), "datacore.yml");
 	stylesFile = new File(getDataFolder(), "styles.yml");
+	channelsFile = new File(getDataFolder(), "channels.yml");
 
 	try {
 		
@@ -86,6 +90,7 @@ public void onEnable(){
 	config = new YamlConfiguration();
 	datacore = new YamlConfiguration();
 	styles = new YamlConfiguration();
+	channels = new YamlConfiguration();
 	loadYamls();
 	
 	String bootUp = styles.getString("Themes.Console.BootUp");
@@ -147,8 +152,23 @@ List <String> helpFilters = Arrays.asList("&cAdministratum &4// &e&oFilter Manag
 									"&8| &3/a ex <player> &9// &3Add <player> to the exemption list for automatic warnings.",
 									"&8| &3/a -ex <player> &9// &3Remove <player> from the exemption list.");
 
-List <String> helpChannels = Arrays.asList("&cAdministratum &4// &e&oChannel Configuration");
-
+List <String> helpChannels = Arrays.asList("&cAdministratum &4// &e&oChannel Configuration",
+									"&8| &3/a channel toggle &9// &3Turn the entire channel system on or off.",
+									"&8| &3/a channel add <channel> <alias> &9// &3Create a channel.",
+									"&8| &3/a channel rem <channel> &9// &3Delete a channel.",
+									"&8| &3/a channel prefix <player> <prefix> &9// &3Change someone's prefix.",
+									"&8| &3/a channel suffix <player> <suffix> &9// &3Change someone's suffix.",
+									"&8| &3/a channel join <channel> &9// &3Join a channel, provided you're not banned from it.",
+									"&8| &3/a channel leave &9// &3Leave the channel you're in.",
+									"&8| &3/a channel kick <player> &9// &3Kick someone out of a channel, provided you have enough permissions.",
+									"&8| &3/a channel ban <player> &9// &3Ban someone from the channel you're in, provided you have enough permissions.",
+									"&8| &3/a channel unban <player> &9// &3Unban someone from the channel that you're in.",
+									"&8| &3/a channel list &9// &3View all active channels and aliases.",
+									"&8| &3/a channel who &9// &3View the online players in your current channel.",
+									"&8| &3/<alias> <message> &9// &3Talk in a channel. Example, a channel with the alias 'o' would be /o <message>.",
+									"&8| &3/a channel format <channel> <format> &9// &3Change a channel's format. The default format is...",
+									"&8| &7&o%channel &f// &7&o%prefix %suffix %player&f: &7&o%message",
+									"&8| &7&oSee the config help on my bukkit page for placeholder information.");
 
 List <String> helpWatchlist = Arrays.asList("&cAdministratum &4// &e&oWatchList",
 									"&8| &3/watchlist add <player> <reason> &9// &3Add <player> to the watchlist.",
@@ -171,6 +191,7 @@ List <String> helpPlugin = Arrays.asList("&cAdministratum &4// &e&oPlugin Option
 									"&8| &3/a reload &9// &3Reload config, datacore, and style sheet.",
 									"&8| &3/a disable &9// &3Disable the plugin, making it appear red in your plugin list.",
 									"&8| &3/a restart &9// &3Restart the plugin as if you reloaded it. *Debugging use only.",
+									"&8| &3/a beta &9// &3Toggle beta features on and off. (See styles.yml)",
 									"&8| &3/a version &9// &3What version of the plugin are you running?");
 
 
@@ -232,8 +253,8 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							for (String currentList : watchList){
 								x++;
 								
-								String message = datacore.getString("Users." + currentList + ".WatchListReason");
-								String auth = datacore.getString("Users." + currentList + ".WatchListAuth");
+								String message = datacore.getString("users." + currentList + ".WatchListReason");
+								String auth = datacore.getString("users." + currentList + ".WatchListAuth");
 								sender.sendMessage(AS("&3" + x + " &4// &c&o" + currentList + " &4// &6" + message + " &4// " + auth));
 							}
 							
@@ -251,8 +272,8 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							
 						Player player2 = (Player) sender;
 						watchList.remove(args[1]);
-						datacore.set("Users." + args[1] + ".WatchListReason", null);
-						datacore.set("Users." + args[1] + ".WatchListAuth", null);
+						datacore.set("users." + args[1] + ".WatchListReason", null);
+						datacore.set("users." + args[1] + ".WatchListAuth", null);
 						datacore.set("WatchList", watchList);
 						sender.sendMessage(AS(menuHeader2 + "Removed &4&o" + args[1] + " &cfrom the watchlist!"));
 							for (Player currentPlayer : Bukkit.getOnlinePlayers()){
@@ -289,8 +310,8 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							}
 						String message = createString(args, 2);
 						watchList.add(args[1]);
-						datacore.set("Users." + args[1] + ".WatchListReason", message);
-						datacore.set("Users." + args[1] + ".WatchListAuth", player2.getDisplayName());
+						datacore.set("users." + args[1] + ".WatchListReason", message);
+						datacore.set("users." + args[1] + ".WatchListAuth", player2.getDisplayName());
 						datacore.set("WatchList", watchList);
 						sender.sendMessage(AS(menuHeader2 + "Added &4&o" + args[1] + " &cto the watchlist!"));
 						
@@ -317,7 +338,7 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 								break;
 							}
 						String message = createString(args, 2);
-						datacore.set("Users." + args[1] + ".WatchListReason", message);
+						datacore.set("users." + args[1] + ".WatchListReason", message);
 						sender.sendMessage(AS(menuHeader2 + "Edited &4&o" + args[1] + " &cin the watchlist!"));
 						
 						for (Player currentPlayer : Bukkit.getOnlinePlayers()){
@@ -366,7 +387,26 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 								sender.sendMessage(AS(rainbowDash));
 								}
 							break;
-												
+							
+						case "channel":
+							
+							for (String eveisreal : helpChannels){
+								sender.sendMessage(AS(eveisreal));
+								}
+							break;
+										
+						case "beta":
+							
+							if (styles.getBoolean("BetaFeatures.useBetaFeatures")){
+								styles.set("BetaFeatures.useBetaFeatures", false);
+								sender.sendMessage(AS(menuHeader + "Beta features are turned off."));
+								break;
+							} else {
+								styles.set("BetaFeatures.useBetaFeatures", true);
+								sender.sendMessage(AS(menuHeader + "Beta features are turned on."));
+								break;
+							}
+							
 						case "reload":
 							
 							loadYamls();
@@ -435,7 +475,18 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							int selectedFreezes = datacore.getInt("users." + selectedPlayer + "." + "Warnings.Freezes.Total");
 							int selectedRestrictions = datacore.getInt("users." + selectedPlayer + "." + "Warnings.Restrictions.Total");
 							
-
+							if (styles.getBoolean("BetaFeatures.useBetaFeatures")){
+								
+								List <String> selectionMenu = styles.getStringList("BetaFeatures.SelectionMenu");
+								
+								for (String dashieKins : selectionMenu){								
+									sender.sendMessage(AS(dashieKins).replaceAll("%overall", selectedOverall + "").replaceAll("%selected", selectedPlayer + "")
+									.replaceAll("%automatics", selectedAutomatics + "").replaceAll("%generals", selectedGenerals + "").replaceAll("%kicks", selectedKicks + "")
+									.replaceAll("%freezes", selectedFreezes + "").replaceAll("%restrictions", selectedRestrictions + "").replaceAll("%bans", selectedBans + ""));
+								}
+								break;
+							} else {
+							
 							sender.sendMessage(new String[] {
 						
 							ChatColor.translateAlternateColorCodes('&', menuHeader) + "Global Dashboard of Yourself",
@@ -450,6 +501,8 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Bans" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedBans,
 							"§" + selectionColor3 + italic + "Lookup" + ChatColor.WHITE + ": " + "§" + selectionColor3 + "/a [a] [g] [m] [k] [f] [r] [b]"});
 							break;
+							
+							}
 							
 						case "a":
 							
@@ -520,6 +573,108 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 								}
 							break;
 							
+						case "channel":
+
+							
+							switch (args[1].toLowerCase()){
+							
+							case "toggle":
+									
+								if (sender.hasPermission("admnistratum.channels") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to channel editing!"));
+									break;
+								}
+								
+								if (config.getBoolean("useChatChannels")){
+									config.set("useChatChannels", false);
+									sender.sendMessage(AS(menuHeader + "You have disabled chat channels!"));
+									break;
+								} else {
+									config.set("useChatChannels", true);
+									sender.sendMessage(AS(menuHeader + "You have enabled chat channels!"));
+									break;
+								}
+								
+							case "kick": case "ban": case "unban":
+								for (String rainbowDash : helpChannels){
+									sender.sendMessage(AS(rainbowDash));
+									}
+								break;
+								
+							case "who":
+								
+								String channel = channels.getString("users." + sender.getName() + ".CurrentChannel");
+								
+									if (channel == null){
+										sender.sendMessage(AS(menuHeader + "You are not in a channel."));
+										break;
+									} else {
+										List <String> users = channels.getStringList("Channels." + channel + ".Users");
+										int x = 0;
+											for (String keyboards : users){
+												if (Bukkit.getOfflinePlayer(keyboards).isOnline()){
+													x++;
+												}
+											}
+										sender.sendMessage(AS(menuHeader + "&6Channel Users &f(" + x + "&f)"));
+											for (String gravy : users){
+												if (Bukkit.getOfflinePlayer(gravy).isOnline()){
+												sender.sendMessage(AS("&6" + Bukkit.getPlayer(gravy).getDisplayName()));
+												}
+											}
+									}
+									
+								break;
+								
+							case "leave":
+								
+								String channel2 = channels.getString("users." + sender.getName() + ".CurrentChannel");
+								
+								if (channel2 == null){
+									sender.sendMessage(AS(menuHeader + "You are not in a channel."));
+									break;
+								}
+								
+								List <String> users = channels.getStringList("Channels." + channel2 + ".Users");
+								Player p7 = (Player) sender;
+								for (String melons : users){
+									if(Bukkit.getOfflinePlayer(melons).isOnline()){
+										Bukkit.getPlayer(melons).sendMessage(AS(menuHeader + p7.getDisplayName() + " has left the channel."));
+									}
+								}
+								users.remove(sender.getName());
+								channels.set("Channels." + channel2 + ".Users", users);
+								channels.set("users." + sender.getName() + ".CurrentChannel", null);
+								sender.sendMessage(AS(menuHeader + "You left the channel."));
+								break;
+								
+							case "list":
+								
+								int x = 0;
+								List <String> aliasList = channels.getStringList("AliasList");
+								sender.sendMessage(AS(menuHeader + "&6&oAliases, Channels, and Users"));
+									for (String onions : aliasList){
+										String peppers = channels.getString("Aliases." + "/" + onions);
+										List <String> users6 = channels.getStringList("Channels." + peppers + ".Users");
+											for (String carrots : users6){
+												if (Bukkit.getOfflinePlayer(carrots).isOnline()){
+													x++;
+												}
+											}
+										sender.sendMessage(AS("/" + onions + " &4// &6" + peppers + " &4// &6" + x));
+									}
+								break;
+								
+							case "add": case "rem": case "prefix": case "suffix": case "alias": case "format":
+								
+								for (String rainbowDash : helpChannels){
+									sender.sendMessage(AS(rainbowDash));
+									}
+								break;
+							}
+							
+						break;
+						
 						case "help":
 
 							switch (args[1].toLowerCase()){
@@ -646,7 +801,17 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							int selectedFreezes = datacore.getInt("users." + selectedPlayer + "." + "Warnings.Freezes.Total");
 							int selectedRestrictions = datacore.getInt("users." + selectedPlayer + "." + "Warnings.Restrictions.Total");
 							
-
+							if (styles.getBoolean("BetaFeatures.useBetaFeatures")){
+								
+								List <String> selectionMenu = styles.getStringList("BetaFeatures.SelectionMenu");
+								
+								for (String dashieKins : selectionMenu){								
+									sender.sendMessage(AS(dashieKins).replaceAll("%overall", selectedOverall + "").replaceAll("%selected", selectedPlayer + "")
+									.replaceAll("%automatics", selectedAutomatics + "").replaceAll("%generals", selectedGenerals + "").replaceAll("%kicks", selectedKicks + "")
+									.replaceAll("%freezes", selectedFreezes + "").replaceAll("%restrictions", selectedRestrictions + "").replaceAll("%bans", selectedBans + ""));
+								}
+								break;
+							} else {
 							sender.sendMessage(new String[] {
 						
 							ChatColor.translateAlternateColorCodes('&', menuHeader) + "Global Dashboard of " + Bukkit.getPlayer(args[1]).getName(),
@@ -661,7 +826,7 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							ChatColor.GRAY + "| " + "§" + selectionColor2 + "Bans" + ChatColor.WHITE + ": " + "§" + selectionColor2 + selectedBans,
 							"§" + selectionColor3 + italic + "Lookup" + ChatColor.WHITE + ": " + "§" + selectionColor3 + "/a [a] [g] [m] [k] [f] [r] [b]"});
 							break;
-							
+							}
 						case "ex":
 							
 							if (datacore.getBoolean("Registered." + args[1]) == false){
@@ -779,64 +944,378 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 								}
 							break;
 							
+						case "channel":
+
+							switch (args[1].toLowerCase()){
+							
+							case "kick":
+								
+								if (sender.hasPermission("admnistratum.channels.actions") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to channel actions!"));
+									break;
+								}
+								
+								String channel1 = channels.getString("users." + sender.getName() + ".CurrentChannel");
+								String channelOther = channels.getString("users." + args[2] + ".CurrentChannel");
+								
+								if (Bukkit.getPlayer(args[2]) == null){
+									sender.sendMessage(AS(menuHeader + "That player is not online!"));
+									break;
+								}
+								
+								if (channel1 == null || channelOther == null){
+									sender.sendMessage(AS(menuHeader + "You or the person you are trying to kick is not in a channel."));
+									break;
+								}
+								
+								List <String> users2 = channels.getStringList("Channels." + channelOther + ".Users");
+								Player p75 = (Player) sender;
+								for (String melons : users2){
+									if(Bukkit.getOfflinePlayer(melons).isOnline()){
+										Bukkit.getPlayer(melons).sendMessage(AS(menuHeader + Bukkit.getPlayer(args[2]).getDisplayName() + " was kicked from the channel by " + p75.getDisplayName() + "."));
+									}
+								}
+								users2.remove(args[2]);
+								channels.set("Channels." + channelOther + ".Users", users2);
+								channels.set("users." + args[2] + ".CurrentChannel", null);
+								Bukkit.getPlayer(args[2]).sendMessage(AS(menuHeader + "You were kicked from the channel."));
+								break;
+								
+							case "unban":
+								
+								if (sender.hasPermission("admnistratum.channels.actions") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to channel actions!"));
+									break;
+								}
+								
+								String channel89 = channels.getString("users." + sender.getName() + ".CurrentChannel");
+						
+								if (channel89 == null){
+									sender.sendMessage(AS(menuHeader + "You are not in a channel."));
+									break;
+								}
+								
+								List <String> banList = channels.getStringList("Channels." + channel89 + ".BanList");
+								
+								if (!banList.contains(args[2])){
+									sender.sendMessage(AS(menuHeader + "That user is not banned from your channel."));
+									break;
+								}
+								
+								banList.remove(args[2]);
+								channels.set("Channels." + channel89 + ".BanList", banList);
+								sender.sendMessage(AS(menuHeader + "Player unbanned."));
+								break;
+										
+							case "ban":
+								
+								if (sender.hasPermission("admnistratum.channels.actions") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to channel actions!"));
+									break;
+								}
+								
+								String channel8 = channels.getString("users." + sender.getName() + ".CurrentChannel");
+								String channel8Other = channels.getString("users." + args[2] + ".CurrentChannel");
+								
+								if (Bukkit.getPlayer(args[2]) == null){
+									sender.sendMessage(AS(menuHeader + "That player is not online!"));
+									break;
+								}
+								
+								if (channel8 == null || channel8Other == null){
+									sender.sendMessage(AS(menuHeader + "You or the person you are trying to ban is not in a channel."));
+									break;
+								}
+								
+								List <String> users8 = channels.getStringList("Channels." + channel8Other + ".Users");
+								Player p756 = (Player) sender;
+								for (String melons : users8){
+									if(Bukkit.getOfflinePlayer(melons).isOnline()){
+										Bukkit.getPlayer(melons).sendMessage(AS(menuHeader + Bukkit.getPlayer(args[2]).getDisplayName() + " was banned from the channel by " + p756.getDisplayName() + "."));
+									}
+								}
+								users8.remove(args[2]);
+								channels.set("Channels." + channel8Other + ".Users", users8);
+								channels.set("users." + args[2] + ".CurrentChannel", null);
+								List <String> banList2 = channels.getStringList("Channels." + channel8Other + ".BanList");
+								banList2.add(args[2]);
+								channels.set("Channels." + channel8Other + ".BanList", banList2);
+								Bukkit.getPlayer(args[2]).sendMessage(AS(menuHeader + "You were banned from the channel."));
+								break;
+							
+							case "add": case "create":
+
+								if (sender.hasPermission("admnistratum.channels") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to channel editing!"));
+									break;
+								}
+								
+								
+								if (args.length != 4){
+									sender.sendMessage(AS(menuHeader + "/a channel add <channel> <alias>"));
+									break;
+								}
+								
+								if (channels.getBoolean("Channels." + args[2] + ".Active") == true){
+									sender.sendMessage(AS(menuHeader + "That channel already exists!"));
+									break;
+								}
+								
+								List <String> aliases = channels.getStringList("AliasList");
+								
+								if (aliases.contains(args[3])){
+									sender.sendMessage(AS(menuHeader + "That alias already exists!"));
+									break;
+								}
+								
+								if (args[3].equalsIgnoreCase("a")){
+									sender.sendMessage(AS(menuHeader + "You can't use /a for this."));
+									break;
+								}
+								
+								String defaultFormat = styles.getString("Channels.DefaultFormat");
+								channels.set("Channels." + args[2] + ".Active", true);
+								channels.set("Channels." + args[2] + ".Alias", args[3]);
+								channels.set("Aliases." + "/" + args[3], args[2]);
+								channels.set("Channels." + args[2] + ".Format", defaultFormat);
+								aliases.add(args[3]);
+								channels.set("AliasList", aliases);
+								sender.sendMessage(AS(menuHeader + "Created channel " + args[2] + " with alias " + args[3] + "."));
+								sender.sendMessage(AS(menuHeader + "Join it with /a channel join " + args[2] + ". See /a help channels for more info."));
+								break;
+								
+							case "remove": case "rem":
+
+								if (sender.hasPermission("admnistratum.channels") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to channel editing!"));
+									break;
+								}
+								
+								
+								if (args.length != 3){
+									sender.sendMessage(AS(menuHeader + "/a channel remove <channel>"));
+									break;
+								}
+								
+								if (channels.getBoolean("Channels." + args[2] + ".Active") == false){
+									sender.sendMessage(AS(menuHeader + "That channel does not exist!"));
+									break;
+								}
+								
+								String alias = channels.getString("Channels." + args[2] + ".Alias");
+								List <String> aliases2 = channels.getStringList("AliasList");
+								aliases2.remove(alias);
+								channels.set("AliasList", aliases2);
+								List <String> users = channels.getStringList("Channels." + args[2] + ".Users");
+									for (String potatoes : users){
+										channels.set("users." + potatoes + ".CurrentChannel", null);
+									}
+								channels.set("Channels." + args[2], null);
+								channels.set("Aliases." + "/" + alias, null);
+								sender.sendMessage(AS(menuHeader + "Deleted the channel and kicked all users out. How evil of you."));
+								break;
+
+								
+							case "join":
+								
+								Player p = (Player) sender;
+								
+								if (args.length != 3){
+									sender.sendMessage(AS(menuHeader + "/a channel add join <channel>."));
+									break;
+								}
+								
+								if (channels.getBoolean("Channels." + args[2] + ".Active") == false){
+									sender.sendMessage(AS(menuHeader + "That channel does not exist!"));
+									break;
+								}
+								
+								if (channels.getStringList("Channels." + args[2] + ".BanList").contains(p.getName())){
+									sender.sendMessage(AS(menuHeader + "You are banned from that channel!"));
+									break;
+								}
+								
+								if (channels.getString("users." + p.getName() + ".CurrentChannel") != null){
+									sender.sendMessage(AS(menuHeader + "You must leave your current channel first! /a channel leave."));
+									break;
+								}
+								
+								channels.set("users." + p.getName() + ".CurrentChannel", args[2]);
+								List <String> users1 = channels.getStringList("Channels." + args[2] + ".Users");
+								for (String melons : users1){
+									if(Bukkit.getOfflinePlayer(melons).isOnline()){
+										Bukkit.getPlayer(melons).sendMessage(AS(menuHeader + p.getDisplayName() + " has joined the channel."));
+									}
+								}
+								users1.add(p.getName());
+								channels.set("Channels." + args[2] + ".Users", users1);
+								sender.sendMessage(AS(menuHeader + "You have joined " + args[2] + "."));
+								saveYamls();
+								break;
+								
+							case "leave":
+								
+								Player p1 = (Player) sender;
+								
+								if (args.length != 2){
+									sender.sendMessage(AS(menuHeader + "/a channel leave."));
+									break;
+								}
+								
+								if (channels.getString("users." + p1.getName() + ".CurrentChannel") == null){
+									sender.sendMessage(AS(menuHeader + "You are not currently in a channel..."));
+									break;
+								}
+									
+								String channel = channels.getString("users." + p1.getName() + ".CurrentChannel");
+								List <String> users26 = channels.getStringList("Channels." + channel + ".Users");
+								for (String melons : users26){
+									if(Bukkit.getOfflinePlayer(melons).isOnline()){
+										Bukkit.getPlayer(melons).sendMessage(AS(menuHeader + p1.getDisplayName() + " has left the channel."));
+									}
+								}
+								channels.set("users." + p1.getName() + ".CurrentChannel", null);
+								users26.remove(p1.getName());
+								channels.set("Channels." + args[2] + ".Users", users26);
+								sender.sendMessage(AS(menuHeader + "You have left the channel."));
+								saveYamls();
+								break;
+								
+							case "format":
+								
+								if (sender.hasPermission("admnistratum.channels") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to channel editing!"));
+									break;
+								}
+								
+								if (args.length < 4){
+									sender.sendMessage(AS(menuHeader + "/a channel format <channel> <format>."));
+									break;
+								}
+								
+								if (channels.getBoolean("Channels." + args[2] + ".Active") == false){
+									sender.sendMessage(AS(menuHeader + "That channel does not exist!"));
+									break;
+								}
+								
+								String message = createString(args, 3);
+								channels.set("Channels." + args[2] + ".Format", message);
+								sender.sendMessage(AS(menuHeader + "Format changed. If it didn't work, re-read the bukkit page or edit in the channels.yml."));
+								break;
+							
+							case "prefix":
+								
+								if (args.length != 4){
+									sender.sendMessage(AS(menuHeader + "/a channel prefix <player> <prefix>"));
+									break;
+								}
+								
+								Player p2 = (Player) sender;
+								
+								if (args[2].equalsIgnoreCase(p2.getName()) && sender.hasPermission("administratum.titles.self") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to title editing!"));
+									break;
+								} else if (args[2].equalsIgnoreCase(p2.getName())){
+									channels.set("users." + p2.getName() + ".Prefix", args[3]);
+									sender.sendMessage(AS(menuHeader + "Prefix changed."));
+									break;
+								} else if (sender.hasPermission("administratum.titles.others")){
+									channels.set("users." + args[2] + ".Prefix", args[3]);
+									sender.sendMessage(AS(menuHeader + "Prefix changed."));
+									break;
+								} else {
+									sender.sendMessage(AS(menuHeader + "You don't have access to title editing!"));
+									break;
+								}
+							
+							case "suffix":
+								
+								if (args.length != 4){
+									sender.sendMessage(AS(menuHeader + "/a channel suffix <player> <prefix>"));
+									break;
+								}
+								
+								Player p3 = (Player) sender;
+								
+								if (args[2].equalsIgnoreCase(p3.getName()) && sender.hasPermission("administratum.titles.self") == false){
+									sender.sendMessage(AS(menuHeader + "You don't have access to title editing!"));
+									break;
+								} else if (args[2].equalsIgnoreCase(p3.getName())){
+									channels.set("users." + p3.getName() + ".Suffix", args[3]);
+									sender.sendMessage(AS(menuHeader + "Suffix changed."));
+									break;
+								} else if (sender.hasPermission("administratum.titles.others")){
+									channels.set("users." + args[2] + ".Suffix", args[3]);
+									sender.sendMessage(AS(menuHeader + "Suffix changed."));
+									break;
+								} else {
+									sender.sendMessage(AS(menuHeader + "You don't have access to title editing!"));
+									break;
+								}
+	
+								
+							}
+							
+						break;
+							
 						case "help":
 							
 							if (args[1].equalsIgnoreCase("search")){
 								
 								int results = 0;
 								
-								String searchQuery = createString(args, 3);
+								String searchQuery = args[2];
 								
 									for (String discord : helpSelection){
 										if (discord.toLowerCase().contains(searchQuery.toLowerCase())){
-											sender.sendMessage(AS(discord));
+											sender.sendMessage(AS(discord.replaceAll(args[2].toLowerCase(), "&6" + args[2].toLowerCase() + "&3")));
 											results++;
 										}
 									}
 									
 									for (String princessCelestia : helpActions){
 										if (princessCelestia.toLowerCase().contains(searchQuery.toLowerCase())){
-											sender.sendMessage(AS(princessCelestia));
+											sender.sendMessage(AS(princessCelestia.replaceAll(args[2].toLowerCase(), "&6" + args[2].toLowerCase() + "&3")));
 											results++;
 										}
 									}
 									
 									for (String princessLuna : helpFilters){
 										if (princessLuna.toLowerCase().contains(searchQuery.toLowerCase())){
-											sender.sendMessage(AS(princessLuna));
+											sender.sendMessage(AS(princessLuna.replaceAll(args[2].toLowerCase(), "&6" + args[2].toLowerCase() + "&3")));
 											results++;
 										}
 									}
 									
 									for (String mrsFrizzle : helpChannels){
 										if (mrsFrizzle.toLowerCase().contains(searchQuery.toLowerCase())){
-											sender.sendMessage(AS(mrsFrizzle));
+											sender.sendMessage(AS(mrsFrizzle.replaceAll(args[2].toLowerCase(), "&6" + args[2].toLowerCase() + "&3")));
 											results++;
 										}
 									}
 									
 									for (String trixie : helpWatchlist){
 										if (trixie.toLowerCase().contains((searchQuery.toLowerCase()))){
-											sender.sendMessage(AS(trixie));
+											sender.sendMessage(AS(trixie.replaceAll(args[2].toLowerCase(), "&6" + args[2].toLowerCase() + "&3")));
 											results++;
 										}
 									}
 									
 									for (String cutieMarkCrusaders : helpEvents){
 										if (cutieMarkCrusaders.toLowerCase().contains(searchQuery.toLowerCase())){
-											sender.sendMessage(AS(cutieMarkCrusaders));
+											sender.sendMessage(AS(cutieMarkCrusaders.replaceAll(args[2].toLowerCase(), "&6" + args[2].toLowerCase() + "&3")));
 											results++;
 										}
 									}
 									
 									for (String rainbowFactory : helpPlugin){
 										if (rainbowFactory.toLowerCase().contains(searchQuery.toLowerCase())){
-											sender.sendMessage(AS(rainbowFactory));
+											sender.sendMessage(AS(rainbowFactory.replaceAll(args[2], "&6" + args[2] + "&3")));
 											results++;
 										}
 									}
 									
-									sender.sendMessage(AS("&8&oWe found " + results + " &8&oresults for this search."));
+									sender.sendMessage(AS("&8&oWe found " + results + " &8&osection(s) for this search."));
 									break;
 											
 							} else {
@@ -998,6 +1477,10 @@ private void firstRun() throws Exception {
     	stylesFile.getParentFile().mkdirs();
         copy(getResource("styles.yml"), stylesFile);
     }
+    if(!channelsFile.exists()){
+    	channelsFile.getParentFile().mkdirs();
+        copy(getResource("channels.yml"), channelsFile);
+    }
 
 }
 
@@ -1023,6 +1506,7 @@ public void saveYamls() {
         config.save(configFile);
         datacore.save(datacoreFile);
         styles.save(stylesFile);
+        channels.save(channelsFile);
     } catch (IOException e) {
         e.printStackTrace();
     }
@@ -1034,6 +1518,7 @@ public void loadYamls() {
         config.load(configFile);
         datacore.load(datacoreFile);
         styles.load(stylesFile);
+        channels.load(channelsFile);
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -1174,11 +1659,11 @@ public void updateCheck(){
 	if (config.getString("WatchListNotify") == null){
 		config.set("WatchListNotify", true);	
 	}
-	if (config.getString("UseJoinMessages") == null){
-		config.set("UseJoinMessages", false);	
+	if (config.getString("useJoinMessages") == null){
+		config.set("useJoinMessages", false);	
 	}
-	if (config.getString("UseQuitMessages") == null){
-		config.set("UseQuitMessages", false);	
+	if (config.getString("useQuitMessages") == null){
+		config.set("useQuitMessages", false);	
 	}
 	if (config.getString("freezeEffect") == null){
 		config.set("freezeEffect", false);	
@@ -1194,6 +1679,34 @@ public void updateCheck(){
 	}
 	if (styles.getString("Themes.Events.WatchListLogin") == null){
 		styles.set("Themes.Events.WatchListLogin", "&cAdministratum &4// &c%player &cis on the Administratum watchlist!");	
+	}
+	if (styles.getString("BetaFeatures.Comment") == null){
+		styles.set("BetaFeatures.Comment", "See the config help on my bukkit page for the placeholder list. Turn the option below this to true to enable beta features.");	
+	}
+	if (styles.getString("BetaFeatures.useBetaFeatures") == null){
+		styles.set("BetaFeatures.useBetaFeatures", false);	
+	}
+	if (config.getString("useChatChannels") == null){
+		config.set("useChatChannels", true);	
+	}
+	if (styles.getString("Channels.DefaultFormat") == null){
+		styles.set("Channels.DefaultFormat", "%channel &f// %prefix %suffix %player&f: &7%message");
+	}
+	if (config.getString("channelConsoleLog") == null){
+		config.set("channelConsoleLog", true);
+	}
+	if (styles.getString("BetaFeatures.SelectionMenu") == null){
+		List <String> betaList = styles.getStringList("BetaFeatures.SelectionMenu");
+		betaList.add("&cAdministratum &4// &cGlobal Dashboard of %selected");
+		betaList.add("&8| &eOverall Warnings&f: &e%overall");
+		betaList.add("&8| &3Automatic Actions&f: &3%automatics");
+		betaList.add("&8| &3General Warns&f: &3%generals");
+		betaList.add("&8| &3Kicks&f: &3%kicks");
+		betaList.add("&8| &3Freezes&f: &3%freezes");
+		betaList.add("&8| &3Restrictions&f: &3%restrictions");
+		betaList.add("&8| &3Bans&f: &3%bans");
+		betaList.add("&7&oLookup&f: &7/a [a] [g] [m] [k] [f] [r] [b]");
+		styles.set("BetaFeatures.SelectionMenu", betaList);
 	}
 	
 	saveYamls();
