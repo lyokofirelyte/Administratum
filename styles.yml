@@ -1,4 +1,4 @@
-### Administratum Global Style Sheet ###
+### Administratum Global Style Sheet - WARNING - BetaFeatures are experimental and may cause bugs! SEE CONFIG HELP FOR PLACEHOLDERS ###
 
 Themes:
   Headers:
@@ -41,3 +41,18 @@ Themes:
   Console:
     BootUp: 'Administratum active. WE ARE WATCHING YOU!'
     ShutDown: 'Administratum inactive. WE ARE STILL WATCHING YOU!'
+Channels:
+  DefaultFormat: '%channel &f// %prefix %suffix %player&f: &7%message'
+BetaFeatures:
+  Comment: See the config help on my bukkit page for the placeholder list. Turn the option below this to true to enable beta features.
+  useBetaFeatures: false
+  SelectionMenu:
+    - '&cAdministratum &4// &cGlobal Dashboard of %selected'
+    - '&8| &eOverall Warnings&f: &e%overall'
+    - '&8| &eAutomatic Actions&f: &3%automatics'
+    - '&8| &eGeneral Warns&f: &3%generals'
+    - '&8| &eKicks&f: &3%kicks'
+    - '&8| &eFreezes&f: &3%freezes'
+    - '&8| &eRestrictions&f: &3%restrictions'
+    - '&8| &eBans&f: &3%bans'
+    - '&8&oLookup&f: &7/a [a] [g] [m] [k] [f] [r] [b]'

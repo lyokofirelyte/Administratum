@@ -53,12 +53,7 @@ public class JoinListen implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		Player p = event.getPlayer();
-	if (plugin.datacore.getBoolean("Banned." + p.getName()) == true) {
-		String reason = plugin.datacore.getString("BanReason." + p.getName());
-		p.kickPlayer(reason);
-		
-	}		
+
 	
 	if (plugin.config.getBoolean("useJoinMessages")){
 		

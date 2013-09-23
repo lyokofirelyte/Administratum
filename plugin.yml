@@ -1,6 +1,6 @@
 name: AbsoluteAdministratum
 main: com.github.lyokofirelyte.Administratum.AdministratumMain
-version: 2.2
+version: 2.3
 
 commands:
    logoff:
@@ -100,22 +100,32 @@ commands:
       permission-message: Nope.jpg
    restrict:
       description: Stop someone from breaking/placing blocks
-      usage: /a restrict <player>
+      usage: /restrict <player>
       permission: administratum.restrict
+      permission-message: Nope.jpg
+   report:
+      description: Report someone for aboose!
+      usage: /report
+      permission: administratum.reports
+      permission-message: Nope.jpg
+   areport:
+      description: Report someone for aboose!
+      usage: /report
+      permission: administratum.reports
       permission-message: Nope.jpg
    unrestrict:
       description: Allow block break/place again
-      usage: /a unrestrict <player>
+      usage: /unrestrict <player>
       permission: administratum.restrict
       permission-message: Nope.jpg
    arestrict:
       description: Stop someone from breaking/placing blocks
-      usage: /a restrict <player>
+      usage: /arestrict <player>
       permission: administratum.restrict
       permission-message: Nope.jpg
    aunrestrict:
       description: Allow block break/place again
-      usage: /a unrestrict <player>
+      usage: /aunrestrict <player>
       permission: administratum.restrict
       permission-message: Nope.jpg
    watchlist:
@@ -131,4 +141,22 @@ commands:
 permissions:
     administratum.watchlist.alerts:
         description: Receive alerts when someone on the watchlist logs in.
+        default: op
+    administratum.channels:
+        description: Manage Administratum channels.
+        default: op
+    administratum.channels.actions:
+        description: Kick/ban/unban for Administratum channels.
+        default: op
+    administratum.titles.self:
+        description: Change your own prefix/suffix.
+        default: op
+    administratum.titles.others:
+        description: Change others prefix/suffix.
+        default: op
+    administratum.reports.list:
+        description: View submitted reports.
+        default: op
+    administratum.reports.manage:
+        description: Remove submitted reports.
         default: op

@@ -34,3 +34,4 @@ useJoinMessages: false
 useQuitMessages: false
 freezeEffect: true
 WatchListNotify: true
+useChatChannels: true

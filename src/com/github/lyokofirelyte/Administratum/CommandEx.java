@@ -178,8 +178,8 @@ String automaticActionFormat = plugin.styles.getString("Themes.Warnings.Automati
         if (event.getMessage().toLowerCase().contains(word2) && plugin.config.getBoolean("filters.usingfilters") == true && plugin.config.getBoolean("exempt." + p.getName()) == false)
         { 
         	
-        	  String sentenceEdit = event.getMessage().toLowerCase();
-         	  String oldWord = word2.toLowerCase();
+        	  String sentenceEdit = event.getMessage();
+         	  String oldWord = word2;
         	  
         	  if(plugin.config.getString("filters.customFilters." + word2) == null){
         		  
@@ -291,6 +291,7 @@ String automaticActionFormat = plugin.styles.getString("Themes.Warnings.Automati
                         	  
                         	  plugin.datacore.set("users." + p.getName() + ".Warnings.Automatics.Action" + automaticsUpdated, "ban");
                         	  plugin.datacore.set("Banned." + p.getName(), true);
+                        	  p.setBanned(true);
                         	  plugin.datacore.set("BanReason." + p.getName(), "Max warning limit reached!");
                         	  
                           }
@@ -340,6 +341,7 @@ String automaticActionFormat = plugin.styles.getString("Themes.Warnings.Automati
                     	  
                     	  plugin.datacore.set("users." + p.getName() + ".Warnings.Automatics.Action" + automaticsUpdated, "ban");
                     	  plugin.datacore.set("Banned." + p.getName(), true);
+                    	  p.setBanned(true);
                     	  plugin.datacore.set("BanReason." + p.getName(), "Max warning limit reached!");
                     	  
                       }
@@ -392,21 +394,7 @@ String automaticActionFormat = plugin.styles.getString("Themes.Warnings.Automati
                       
                       
               }
-	
-                      
-	if (plugin.config.getBoolean("filters.denyCaps") == true){
-		
-		if (isAllUpperCase(sentence) == true){
-			
-		String newSentence2 = sentence.toLowerCase();
-		event.setMessage(newSentence2);
-		return;
-			
-		}
-		
-	    }  
-            	
-            		  
+	  
             	  }
             	  
               
@@ -829,6 +817,7 @@ String menuHeader = plugin.styles.getString("Themes.Headers.Menus");
 			}
 			
 		    plugin.datacore.set("Banned." + args[0], true);
+		    banned.setBanned(true);
 		   
 		    String reason = ChatColor.GOLD + italic + createString(args, 1);
 		    
@@ -1059,14 +1048,15 @@ if(cmd.getName().equalsIgnoreCase("aunban")) {
 	
 	plugin.datacore.set("Banned." + args[0], null);
 	plugin.datacore.set("BanReason." + args[0], null);
+	Bukkit.getOfflinePlayer(args[0]).setBanned(false);
 	
 	if (sender instanceof Player) {
 	Player unbanner = (Player) sender;
-	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unbanDisplay).replaceAll("%auth", unbanner.getDisplayName()).replaceAll("%player", Bukkit.getPlayer(args[0]).getName()));
+	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unbanDisplay).replaceAll("%auth", unbanner.getDisplayName()).replaceAll("%player", Bukkit.getOfflinePlayer(args[0]).getName()));
 	return true;
 	}
 	
-	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unbanDisplay).replaceAll("%auth", "console").replaceAll("%player", Bukkit.getPlayer(args[0]).getName()));
+	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', unbanDisplay).replaceAll("%auth", "console").replaceAll("%player", Bukkit.getOfflinePlayer(args[0]).getName()));
 	return true;
 }
 

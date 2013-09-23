@@ -44,6 +44,7 @@ public class AdministratumMain extends JavaPlugin implements CommandExecutor {
 public void onEnable(){
 
 
+
 	PluginManager pm = getServer().getPluginManager();
 	pm.registerEvents(new CommandEx(this), this);
 	pm.registerEvents(new JoinListen(this), this);
@@ -72,6 +73,8 @@ public void onEnable(){
 	getCommand("aevac").setExecutor(new CommandEx(this));
 	getCommand("watchlist").setExecutor(this);
 	getCommand("awatchlist").setExecutor(this);
+	getCommand("report").setExecutor(this);
+	getCommand("areport").setExecutor(this);
 	getCommand("a").setExecutor(this);
 	Plugin herochat = getServer().getPluginManager().getPlugin("Herochat");
 	Plugin mcbans = getServer().getPluginManager().getPlugin("MCBans");
@@ -131,6 +134,7 @@ List <String> helpSelection = Arrays.asList("&cAdministratum &4// &e&oSelection 
 									"&8| &3/a r <player> &9// &3Restriction lookup on selected player.");
 
 List <String> helpActions = Arrays.asList("&cAdministratum &4// &e&oAuthoritative Actions",
+									"&8| &3/report <reason> &9// &3Send a report to staff.",
 									"&8| &3/aban <player> <reason> &9// &3Ban someone.",
 									"&8| &3/aunban <player> &9// &3Unban someone.",
 									"&8| &3/mute <player> <reason> &9// &3Perma-mute someone.",	
@@ -210,6 +214,98 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 
 	switch (cmd.getName()){
 
+	
+	case "report": case "areport":
+		
+		String menuHeader3 = styles.getString("Themes.Headers.Menus");
+		
+		if (args.length == 0){
+			sender.sendMessage(AS(menuHeader3 + "/report <report>, /report remove <ID>, /report list"));
+			break;
+		}
+		
+		
+		if (sender.hasPermission("administratum.reports") == false){
+			sender.sendMessage(AS(menuHeader3 + "You don't have permissions for that!"));
+			break;
+		}
+		
+		if (args[0].equalsIgnoreCase("remove")){
+	
+			if (args.length != 2){
+				sender.sendMessage(AS(menuHeader3 + "/report remove <ID>"));
+				break;
+			}
+			
+			if (sender.hasPermission("administratum.reports.manage") == false){
+				sender.sendMessage(AS(menuHeader3 + "You don't have permissions for that!"));
+				break;
+			}
+			
+			List <String> reports = datacore.getStringList("Reports");
+			int x = 0;
+			
+				if (reports.size() <= 0){
+					sender.sendMessage(AS(menuHeader3 + "There are no reports."));
+					break;
+				}
+				
+				for (String b : reports){
+					
+					if (b.startsWith("&4| " + args[1])){
+						reports.remove(b);
+						datacore.set("Reports", reports);
+						sender.sendMessage(AS(menuHeader3 + "Removed report: " + b));
+						x++;
+						break;
+					}
+				}
+				
+				if (x == 0){
+				sender.sendMessage(AS(menuHeader3 + "That report does not exist."));
+				break;
+				}
+				
+			break;
+		}
+		
+
+		if (args[0].equalsIgnoreCase("list")){
+	
+			
+			if (sender.hasPermission("administratum.reports.list") == false){
+				sender.sendMessage(AS(menuHeader3 + "You don't have permissions for that!"));
+				break;
+			}
+			
+			List <String> reports = datacore.getStringList("Reports");
+			
+				if (reports.size() <= 0){
+					sender.sendMessage(AS(menuHeader3 + "There are no reports."));
+					break;
+				}
+				
+				for (String a : reports){
+					sender.sendMessage(AS(a));
+				}
+				
+			break;
+		}
+	
+		String reportMessage = createString(args, 0);
+		List <String> reports = datacore.getStringList("Reports");
+		reports.add("&4| " + (reports.size()+1) + " &c// " + ((Player) sender).getDisplayName() + " &c// " + reportMessage);
+		datacore.set("Reports", reports);
+		sender.sendMessage(AS(menuHeader3 + "Report sent."));
+		for (Player b : Bukkit.getOnlinePlayers()){
+			if (b.hasPermission("administratum.reports.view")){
+				b.sendMessage(AS(menuHeader3 + "A report has been received! Check /areport list!"));
+			}
+		}
+		
+		break;
+	
+	
 		case "watchlist": case "awatchlist":
 
 			String watchListAddDisplay = styles.getString("Themes.Events.WatchListAdd");
@@ -386,6 +482,11 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 							for (String rainbowDash : helpGlobal){
 								sender.sendMessage(AS(rainbowDash));
 								}
+							break;
+							
+						case "report":
+							
+							sender.sendMessage(AS(menuHeader + "Try /report <reason> to send a report to staff."));
 							break;
 							
 						case "channel":
